@@ -220,6 +220,19 @@ app.get("/home_data", async (req, res) => {
     }
 });
 
+
+app.get("/popup", async (req, res) => {
+    try {
+        const { popup } = await connectToDatabase();
+        const popupData = await popup.find({}).toArray();
+        res.status(200).json(popupData);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
