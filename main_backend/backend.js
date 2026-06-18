@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.get('/health', (req, res) => {
     res.status(200).json({ message: 'Server is running!' });
@@ -233,6 +233,8 @@ app.get("/popup", async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+ 
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server is running on port ${PORT}`);
 });
