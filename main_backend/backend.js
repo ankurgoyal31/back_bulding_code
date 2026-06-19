@@ -155,7 +155,24 @@ app.get("/careers", async (req, res) => {
 
 app.post("/apply", upload.single("cv"), async (req, res) => {
     try {
-        const {apply} = await connectToDatabase();
+
+        const { apply } = await connectToDatabase();
+
+        let filePath = null;
+
+        if (req.file) {
+
+            if (req.file.mimetype.startsWith("image/")) {
+                filePath = `/uploads/images/${req.file.filename}`;
+            }
+            else if (req.file.mimetype.startsWith("video/")) {
+                filePath = `/uploads/videos/${req.file.filename}`;
+            }
+            else {
+                filePath = `/uploads/files/${req.file.filename}`;
+            }
+
+        }
 
         const data = {
             name: req.body.name,
@@ -164,16 +181,7 @@ app.post("/apply", upload.single("cv"), async (req, res) => {
             experience: req.body.experience,
             job: req.body.job,
             post: req.body.post,
-          if (req.file) {
-    if (req.file.mimetype.startsWith("image/")) {
-        filePath = `/uploads/images/${req.file.filename}`;
-    } else if (req.file.mimetype.startsWith("video/")) {
-        filePath = `/uploads/videos/${req.file.filename}`;
-    } else {
-        filePath = `/uploads/files/${req.file.filename}`;
-    }
-}
-            cv:filePath,
+            cv: filePath,
             createdAt: new Date()
         };
 
@@ -183,7 +191,7 @@ app.post("/apply", upload.single("cv"), async (req, res) => {
             success: true,
             message: "Application submitted successfully",
             data: result
-        }); 
+        });
 
     } catch (error) {
         console.error(error);
@@ -194,7 +202,6 @@ app.post("/apply", upload.single("cv"), async (req, res) => {
         });
     }
 });
-
 
 app.post("/subscribe", upload.single("cv"), async (req, res) => {
     try {
