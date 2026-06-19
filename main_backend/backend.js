@@ -36,7 +36,8 @@ app.get('/projects', async (req, res) => {
     try {
         const { project } = await connectToDatabase();
 
-        const projects = await project.find({}).toArray();
+const projects = (await project.find({}).toArray()).reverse();
+
 
         res.status(200).json(projects);
 
