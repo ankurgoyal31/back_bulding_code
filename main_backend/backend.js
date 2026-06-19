@@ -3,9 +3,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectToDatabase, upload } from "./connection.js";
 import { ObjectId } from 'mongodb';
+import path from "path";
+
 dotenv.config();
 
 const app = express();
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use(cors());
 app.use(express.json());
@@ -161,7 +164,16 @@ app.post("/apply", upload.single("cv"), async (req, res) => {
             experience: req.body.experience,
             job: req.body.job,
             post: req.body.post,
-            cv: req.file ? req.file.location : null, // AWS S3 URL
+          if (req.file) {
+    if (req.file.mimetype.startsWith("image/")) {
+        filePath = `/uploads/images/${req.file.filename}`;
+    } else if (req.file.mimetype.startsWith("video/")) {
+        filePath = `/uploads/videos/${req.file.filename}`;
+    } else {
+        filePath = `/uploads/files/${req.file.filename}`;
+    }
+}
+            cv:filePath,
             createdAt: new Date()
         };
 
